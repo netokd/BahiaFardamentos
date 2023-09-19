@@ -1,5 +1,7 @@
 package com.neto.bahiafardamentos.service;
 
+import com.neto.bahiafardamentos.exception.ApiError;
+import com.neto.bahiafardamentos.exception.ApiResponse;
 import com.neto.bahiafardamentos.model.CategoriaFardamento;
 import com.neto.bahiafardamentos.model.Tamanho;
 import com.neto.bahiafardamentos.repository.CategoriaFardamentoRepository;
@@ -32,7 +34,22 @@ public class CategoriaFardamentoService {
     public static void main(String[] args){SpringApplication.run(CategoriaFardamentoService.class, args);}
 
     @GetMapping
-    public List<CategoriaFardamento> getCategoria(){return categoriaFardamentoRepository.findAll();}
+    public ResponseEntity<?> getCategoria(){
+        try{
+            List<CategoriaFardamento> categorias = categoriaFardamentoRepository.findAll();
+
+            if(categorias.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiError(HttpStatus.NOT_FOUND, "Nenhuma categoria encontrada."));
+            }
+            return ResponseEntity.ok(categorias);
+
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor:" + ex.getMessage()));
+        }
+
+    }
 
     record NewTamanhoRequest(
             Integer tamanhoId
@@ -50,20 +67,30 @@ public class CategoriaFardamentoService {
     }
 
     @PostMapping
-    public void addCategoriaFardamento(@RequestBody NewCategoriaRequest request){
-        Integer tamanhoId = request.getTamanhoId();
+    public ResponseEntity<Object> addCategoriaFardamento(@RequestBody NewCategoriaRequest request){
+       try{
+           Integer tamanhoId = request.getTamanhoId();
+           Optional<Tamanho> tamanhoOptional = tamanhoRepository.findById(tamanhoId);
+           if(tamanhoOptional.isPresent()) {
+               Tamanho tamanho = tamanhoOptional.get();
+               CategoriaFardamento categoria = new CategoriaFardamento();
+               categoria.setNome(request.getNome());
+               categoria.getTamanhos().add(tamanho);
+               categoriaFardamentoRepository.save(categoria);
+               return ResponseEntity.status(HttpStatus.CREATED)
+                       .body(new ApiResponse("Categoria adicionada com sucesso"));
+           }else {
+               return  ResponseEntity.status(HttpStatus.NOT_FOUND)
+                       .body(new ApiError(HttpStatus.NOT_FOUND, "Tamanho não encontrado"));
+           }
 
-        Optional<Tamanho> tamanhoOptional = tamanhoRepository.findById(tamanhoId);
-        if(tamanhoOptional.isPresent()) {
-            Tamanho tamanho = tamanhoOptional.get();
-            CategoriaFardamento categoria = new CategoriaFardamento();
-            categoria.setNome(request.getNome());
-            categoria.getTamanhos().add(tamanho);
 
+       }catch(Exception ex){
 
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                   .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor: "+ ex.getMessage()));
+       }
 
-            categoriaFardamentoRepository.save(categoria);
-        }
     }
 
     @PostMapping("/add-tam/{categoriaId}")
