@@ -21,6 +21,8 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
     cache: false
+  messages:
+    basename: messages
 
 
   main:

@@ -2,9 +2,9 @@ package com.neto.bahiafardamentos.model;
 
 
 import jakarta.persistence.*;
-import jakarta.persistence.Id;
 
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class CategoriaFardamento {
@@ -24,13 +24,19 @@ public class CategoriaFardamento {
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false)
-    private String tamanho;
+    @ManyToMany
+    @JoinTable(
+            name = "categoria_tamanho", // Nome da tabela de associação
+            joinColumns = @JoinColumn(name = "categoria_id"), // Chave estrangeira para CategoriaFardamento
+            inverseJoinColumns = @JoinColumn(name = "tamanho_id") // Chave estrangeira para Tamanho
+    )
 
-    public CategoriaFardamento(Integer id, String nome, String tamanho) {
+    private Set<Tamanho> tamanhos = new HashSet<>();
+
+    public CategoriaFardamento(Integer id, String nome, Set<Tamanho> tamanhos) {
         this.id = id;
         this.nome = nome;
-        this.tamanho = tamanho;
+        this.tamanhos = tamanhos;
     }
 
     public CategoriaFardamento() {
@@ -52,25 +58,12 @@ public class CategoriaFardamento {
         this.nome = nome;
     }
 
-    public String getTamanho() {
-        return tamanho;
+    public Set<Tamanho> getTamanhos() {
+        return tamanhos;
     }
 
-    public void setTamanho(String tamanho) {
-        this.tamanho = tamanho;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CategoriaFardamento that = (CategoriaFardamento) o;
-        return Objects.equals(id, that.id) && Objects.equals(nome, that.nome) && Objects.equals(tamanho, that.tamanho);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nome, tamanho);
+    public void setTamanhos(Set<Tamanho> tamanhos) {
+        this.tamanhos = tamanhos;
     }
 
     @Override
@@ -78,7 +71,7 @@ public class CategoriaFardamento {
         return "CategoriaFardamento{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", tamanho='" + tamanho + '\'' +
+                ", tamanhos=" + tamanhos +
                 '}';
     }
 }

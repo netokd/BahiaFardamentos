@@ -1,13 +1,20 @@
 package com.neto.bahiafardamentos.service;
 
 
+import com.neto.bahiafardamentos.exception.ApiError;
+import com.neto.bahiafardamentos.exception.ApiResponse;
+import com.neto.bahiafardamentos.exception.BandeiraNotFoundException;
 import com.neto.bahiafardamentos.model.Bandeira;
 import com.neto.bahiafardamentos.repository.BandeiraRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
 @RestController
@@ -22,32 +29,97 @@ public class BandeiraService {
     public static void main(String[] args){SpringApplication.run(BandeiraService.class,args);}
 
     @GetMapping
-    public List<Bandeira> getBandeira(){return bandeiraRepository.findAll();}
+    public ResponseEntity<?> getBandeira(){
+        try{
+            List<Bandeira> bandeiras = bandeiraRepository.findAll();
+
+            if(bandeiras.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiError(HttpStatus.NOT_FOUND, "Nenhuma bandeira encontrada."));
+            }
+            return ResponseEntity.ok(bandeiras);
+        }catch(Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor: " + ex.getMessage()));
+        }
+
+    }
 
     record NewBandeiraRequest(
             String nome
     ){}
 
     @PostMapping
-    public void addBandeira(@RequestBody NewBandeiraRequest request){
-        Bandeira bandeira = new Bandeira();
-        bandeira.setNome(request.nome());
-        bandeiraRepository.save(bandeira);
+    public ResponseEntity<Object> addBandeira(@RequestBody NewBandeiraRequest request){
+        try{
+            Bandeira bandeira = new Bandeira();
+            bandeira.setNome(request.nome());
+            bandeiraRepository.save(bandeira);
+            ApiResponse response = new ApiResponse("Bandeira adicionada com sucesso.");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }catch(BandeiraNotFoundException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                    body(new ApiError(HttpStatus.NOT_FOUND,"Bandeira não encontrada: " + ex.getMessage()));
+
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor: " + ex.getMessage()));
+        }
+
 
     }
 
     @DeleteMapping("{bandeiraId}")
-    public void deleteBandeira(@PathVariable("bandeiraId") Integer id){bandeiraRepository.deleteById(id);}
+    public ResponseEntity<Object> deleteBandeira(@PathVariable("bandeiraId") Integer id){
+        try{
+            Optional<Bandeira> optionalBandeira = bandeiraRepository.findById(id);
+            if(optionalBandeira.isPresent()){
+              Bandeira bandeira = optionalBandeira.get();
+              //Remover futuras associações
+
+               bandeiraRepository.deleteById(id);
+               ApiResponse response = new ApiResponse("Bandeira excluída com sucesso.");
+               return ResponseEntity.ok(response);
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiError(HttpStatus.NOT_FOUND,"Bandeira não encontrada."));
+            }
+        }catch(DataIntegrityViolationException ex) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiError(HttpStatus.BAD_REQUEST, "Erro de integridade de dados:"+ ex.getMessage()));
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor" + ex.getMessage()));
+        }
+    }
 
     @PostMapping("{bandeiraId}")
-    public void updateBandeira(@PathVariable("bandeiraId") Integer bandeiraId, @RequestBody Bandeira updateBandeira){
+    public ResponseEntity<Object> updateBandeira(@PathVariable("bandeiraId") Integer bandeiraId, @RequestBody Bandeira updateBandeira){
        //Busca a Bandeira existente pelo ID
-        Bandeira existingBandeira = bandeiraRepository.findById(bandeiraId)
-               .orElseThrow(() -> new RuntimeException("Bandeira não encontrada"));
-        //Atualiza os campos da Bandeira existente com os dados da updateBandeira
-       existingBandeira.setNome(updateBandeira.getNome());
-        //Salva a bandeira atualizada no repositório
-       bandeiraRepository.save(existingBandeira);
+        try{
+            Optional<Bandeira> optionalBandeira = bandeiraRepository.findById(bandeiraId);
+            if(optionalBandeira.isPresent()){
+                Bandeira existingBandeira = optionalBandeira.get();
+                //Atualiza os campos da Bandeira existente com os dados da updateBandeira
+                existingBandeira.setNome(updateBandeira.getNome());
+                //Salva a bandeira atualizada no repositório
+                bandeiraRepository.save(existingBandeira);
+
+                ApiResponse response = new ApiResponse("Bandeira atualizada com sucesso");
+                return ResponseEntity.ok(response);
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiError(HttpStatus.NOT_FOUND, "Bandeira não encontrada."));
+            }
+        }catch(DataIntegrityViolationException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiError(HttpStatus.BAD_REQUEST, "Erro de integridade de dados:" + ex.getMessage()));
+        }catch(Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor:" + ex.getMessage()));
+        }
+
+
     }
 
 }

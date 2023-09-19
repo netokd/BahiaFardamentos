@@ -1,9 +1,12 @@
 package com.neto.bahiafardamentos.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Tamanho {
@@ -22,9 +25,17 @@ public class Tamanho {
     @Column(nullable = false)
     private String nome;
 
+    @ManyToMany(mappedBy = "tamanhos")
+    @JsonIgnore
+    private Set<CategoriaFardamento> categorias = new HashSet<>();
 
-    public Tamanho(Integer id, String nome) {
+    public Tamanho(Integer id, String nome, Set<CategoriaFardamento> categorias) {
         this.id = id;
+        this.nome = nome;
+        this.categorias = categorias;
+    }
+
+    public Tamanho(String nome) {
         this.nome = nome;
     }
 
@@ -47,17 +58,26 @@ public class Tamanho {
         this.nome = nome;
     }
 
+    public Set<CategoriaFardamento> getCategorias() {
+        return categorias;
+    }
+
+    public void setCategorias(Set<CategoriaFardamento> categorias) {
+        this.categorias = categorias;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tamanho tamanho = (Tamanho) o;
-        return Objects.equals(id, tamanho.id) && Objects.equals(nome, tamanho.nome);
+        return Objects.equals(id, tamanho.id) && Objects.equals(nome, tamanho.nome) && Objects.equals(categorias, tamanho.categorias);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome);
+        return Objects.hash(id, nome, categorias);
     }
 
     @Override
@@ -65,6 +85,7 @@ public class Tamanho {
         return "Tamanho{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
+                ", categorias=" + categorias +
                 '}';
     }
 }

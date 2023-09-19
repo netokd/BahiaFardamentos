@@ -2,7 +2,6 @@ package com.neto.bahiafardamentos.model;
 
 
 import jakarta.persistence.*;
-import jakarta.persistence.Id;
 
 import java.util.Objects;
 
