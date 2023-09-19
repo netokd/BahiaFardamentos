@@ -68,6 +68,31 @@ public class TamanhoService {
         }
     }
 
+    @PostMapping("{tamanhoId}")
+    public ResponseEntity<Object> updateTamanho(@PathVariable("tamanhoId")Integer tamanhoId, @RequestBody Tamanho updateTamanho){
+        try{
+            Optional<Tamanho> optionalTamanho = tamanhoRepository.findById(tamanhoId);
+            if(optionalTamanho.isPresent()){
+                Tamanho existingTamanho = optionalTamanho.get();
+                existingTamanho.setNome(updateTamanho.getNome());
+
+                tamanhoRepository.save(existingTamanho);
+
+                return ResponseEntity.ok("Tamanho Atualizado com sucesso");
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiError(HttpStatus.NOT_FOUND, "Tamanho não encontrado"));
+            }
+        }catch (DataIntegrityViolationException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiError(HttpStatus.BAD_REQUEST, "Erro de integridade de dados:" + ex.getMessage()));
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor:" + ex.getMessage()));
+
+        }
+    }
+
 
     @DeleteMapping("{tamanhoId}")
     public ResponseEntity<String> deleteTamanho(@PathVariable("tamanhoId") Integer id){
@@ -92,9 +117,6 @@ public class TamanhoService {
         }catch(Exception ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + ex.getMessage());
         }
-
-
-
     }
 
 
