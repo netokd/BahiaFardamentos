@@ -93,7 +93,7 @@ public class CategoriaFardamentoService {
 
     }
 
-    @PostMapping("/add-tam/{categoriaId}")
+    @PostMapping("/tam/{categoriaId}")
     public ResponseEntity<String> addTamanhoCategoria(@PathVariable("categoriaId") Integer categoriaId, @RequestBody NewTamanhoRequest request){
        try{
            Optional<CategoriaFardamento> categoriaOptional = categoriaFardamentoRepository.findById(categoriaId);
@@ -118,6 +118,37 @@ public class CategoriaFardamentoService {
        }
 
     }
+
+    @DeleteMapping("/tam/{categoriaId}")
+    public ResponseEntity<String> delTamanhoCategoria(@PathVariable("categoriaId") Integer categoriaId, @RequestBody NewTamanhoRequest request){
+        try {
+            Optional<CategoriaFardamento> optionalCategoria = categoriaFardamentoRepository.findById(categoriaId);
+            Integer tamanhoId = request.tamanhoId;
+
+            if(optionalCategoria.isPresent()){
+                CategoriaFardamento existingCategoria = optionalCategoria.get();
+
+                boolean tamanhoEncontrado = existingCategoria.getTamanhos().removeIf(tamanho -> tamanho.getId().equals(tamanhoId));
+
+                if(tamanhoEncontrado){
+                    categoriaFardamentoRepository.save(existingCategoria);
+                    return ResponseEntity.ok("Tamanho removido com sucesso da categoria.");
+                }else{
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body("Tamanho não encontrado na categoria");
+                }
+
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Categoria não encontrado");
+            }
+        }catch(DataIntegrityViolationException ex){
+            return ResponseEntity.badRequest().body("Erro de integridade de dados: " + ex.getMessage());
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + ex.getMessage());
+        }
+    }
+
     @DeleteMapping("{categoriaId}")
     public ResponseEntity<String> deleteCategoria(@PathVariable("categoriaId") Integer id){
         Optional<CategoriaFardamento> optionalCategoriaFardamento = categoriaFardamentoRepository.findById(id);
