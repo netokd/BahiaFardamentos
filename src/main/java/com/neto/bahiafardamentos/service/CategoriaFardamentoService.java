@@ -119,6 +119,28 @@ public class CategoriaFardamentoService {
 
     }
 
+    @PostMapping("{categoriaId}")
+    public ResponseEntity<?> updateCategoria(@PathVariable("categoriaId") Integer categoriaId, @RequestBody CategoriaFardamento updateCategoria){
+        try{
+            Optional<CategoriaFardamento> optionalCategoria = categoriaFardamentoRepository.findById(categoriaId);
+            if(optionalCategoria.isPresent()){
+                CategoriaFardamento existingCategoria = optionalCategoria.get();
+                existingCategoria.setNome(updateCategoria.getNome());
+
+                categoriaFardamentoRepository.save(existingCategoria);
+
+                return ResponseEntity.ok("Categoria atualizada com sucesso");
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiError(HttpStatus.NOT_FOUND, "Categoria não encontrado"));
+            }
+        }catch(DataIntegrityViolationException ex){
+            return ResponseEntity.badRequest().body("Erro de integridade de dados: " + ex.getMessage());
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + ex.getMessage());
+        }
+    }
+
     @DeleteMapping("/tam/{categoriaId}")
     public ResponseEntity<String> delTamanhoCategoria(@PathVariable("categoriaId") Integer categoriaId, @RequestBody NewTamanhoRequest request){
         try {
