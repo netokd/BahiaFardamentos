@@ -43,9 +43,10 @@ public class ColaboradorService {
                         .body(new ApiError(HttpStatus.NOT_FOUND, "Nenhum Colaborador encontrado"));
             }
             return ResponseEntity.ok(colaborador);
+        }catch(DataIntegrityViolationException ex){
+            return ResponseEntity.badRequest().body("Erro de integridade de dados: " + ex.getMessage());
         }catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor:" + ex.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + ex.getMessage());
         }
     }
 

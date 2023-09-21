@@ -16,7 +16,7 @@ public class Fardamento {
             strategy = GenerationType.SEQUENCE,
             generator = "fardamento_id_sequence"
     )
-    public Integer id;
+    private Integer id;
 
     @Column(nullable = false)
     private String nome;
@@ -28,21 +28,18 @@ public class Fardamento {
     private CategoriaFardamento categoria;
 
     @ManyToOne
-    private  Tamanho tamanho;
-
-    @ManyToOne
     private Bandeira bandeira;
 
-    public Fardamento(Integer id, String nome, Integer quantidade, CategoriaFardamento categoria, Tamanho tamanho, Bandeira bandeira) {
+
+    public Fardamento() {
+    }
+
+    public Fardamento(Integer id, String nome, Integer quantidade, CategoriaFardamento categoria, Bandeira bandeira) {
         this.id = id;
         this.nome = nome;
         this.quantidade = quantidade;
         this.categoria = categoria;
-        this.tamanho = tamanho;
         this.bandeira = bandeira;
-    }
-
-    public Fardamento() {
     }
 
     public Integer getId() {
@@ -77,14 +74,6 @@ public class Fardamento {
         this.categoria = categoria;
     }
 
-    public Tamanho getTamanho() {
-        return tamanho;
-    }
-
-    public void setTamanho(Tamanho tamanho) {
-        this.tamanho = tamanho;
-    }
-
     public Bandeira getBandeira() {
         return bandeira;
     }
@@ -98,12 +87,12 @@ public class Fardamento {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fardamento that = (Fardamento) o;
-        return Objects.equals(id, that.id) && Objects.equals(nome, that.nome) && Objects.equals(quantidade, that.quantidade) && Objects.equals(categoria, that.categoria) && Objects.equals(tamanho, that.tamanho) && Objects.equals(bandeira, that.bandeira);
+        return Objects.equals(id, that.id) && Objects.equals(nome, that.nome) && Objects.equals(quantidade, that.quantidade) && Objects.equals(categoria, that.categoria) && Objects.equals(bandeira, that.bandeira);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, quantidade, categoria, tamanho, bandeira);
+        return Objects.hash(id, nome, quantidade, categoria, bandeira);
     }
 
     @Override
@@ -113,7 +102,6 @@ public class Fardamento {
                 ", nome='" + nome + '\'' +
                 ", quantidade=" + quantidade +
                 ", categoria=" + categoria +
-                ", tamanho=" + tamanho +
                 ", bandeira=" + bandeira +
                 '}';
     }
