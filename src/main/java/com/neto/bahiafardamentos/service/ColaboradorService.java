@@ -49,6 +49,9 @@ public class ColaboradorService {
         }
     }
 
+    record NewKitRequest(
+            Date dataUltimoKitEnviado
+    ){}
     public static class NewColaboradorRequest{
         private final String nome;
         private final String cargo;
@@ -99,7 +102,87 @@ public class ColaboradorService {
         }
     }
 
+    @PostMapping("{colaboradorId}")
+    public ResponseEntity<?> updateColaborador(
+            @PathVariable("colaboradorId") Integer colaboradorId,
+            @RequestBody NewColaboradorRequest updateColaborador
+    ){
+        try{
+            Optional<Colaborador> optionalColaborador = colaboradorRepository.findById(colaboradorId);
+            Integer postoId = updateColaborador.getPostoId();
 
+            if(optionalColaborador.isPresent()){
+                Colaborador existingColaborador = optionalColaborador.get();
+                existingColaborador.setNome(updateColaborador.getNome());
+                existingColaborador.setDataContratacao(updateColaborador.getDataContratacao());
+                existingColaborador.setCargo(updateColaborador.getCargo());
 
+                Optional<Posto> optionalPosto = postoRepository.findById(postoId);
+                if(optionalPosto.isPresent()){
+                    Posto posto = optionalPosto.get();
+                    existingColaborador.setPosto(posto);
+                }else{
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body(new ApiError(HttpStatus.NOT_FOUND, "Posto não encontrada"));
+                }
+                colaboradorRepository.save(existingColaborador);
+
+                return ResponseEntity.ok("Posto atualizado com sucesso");
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiError(HttpStatus.NOT_FOUND, "Colaborador não encontrado"));
+            }
+        }catch(DataIntegrityViolationException ex){
+            return ResponseEntity.badRequest().body("Erro de integridade de dados: " + ex.getMessage());
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + ex.getMessage());
+        }
+    }
+
+    @PostMapping("/kit/{colaboradorId}")
+    public ResponseEntity<?> updateDataKit(
+            @PathVariable("colaboradorId") Integer colaboradorId,
+            @RequestBody NewKitRequest request
+    ){
+       try{
+            Optional<Colaborador> optionalColaborador = colaboradorRepository.findById(colaboradorId);
+
+            if(optionalColaborador.isPresent()){
+                Colaborador existingColaborador = optionalColaborador.get();
+
+                existingColaborador.setDataUltimoKitEnviado(request.dataUltimoKitEnviado);
+
+                colaboradorRepository.save(existingColaborador);
+
+                return ResponseEntity.ok("Data do ultimo Kit atualizado");
+
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ApiError(HttpStatus.NOT_FOUND, "Colaborador não encontrado"));
+            }
+       }catch(DataIntegrityViolationException ex){
+           return ResponseEntity.badRequest().body("Erro de integridade de dados: " + ex.getMessage());
+       }catch (Exception ex){
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + ex.getMessage());
+       }
+    }
+
+    @DeleteMapping("{colaboradorId}")
+    public ResponseEntity<?> deleteColaborador(@PathVariable("colaboradorId") Integer colaboradorId){
+        try{
+            Optional<Colaborador> optionalColaborador = colaboradorRepository.findById(colaboradorId);
+            if(optionalColaborador.isPresent()){
+                colaboradorRepository.deleteById(colaboradorId);
+                return ResponseEntity.ok("Colaborador deletado com sucesso");
+            }else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Colaborador  não encontrado.");
+            }
+        }catch(DataIntegrityViolationException ex){
+            return ResponseEntity.badRequest().body("Erro de integridade de dados: " + ex.getMessage());
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + ex.getMessage());
+        }
+    }
 
 }
+

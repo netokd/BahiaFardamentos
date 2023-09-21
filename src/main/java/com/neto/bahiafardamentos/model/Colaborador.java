@@ -1,5 +1,6 @@
 package com.neto.bahiafardamentos.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -24,8 +25,10 @@ public class Colaborador {
     private String nome;
 
     @Column(nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyy", timezone = "UTC")
     private Date dataContratacao;
 
+    @JsonFormat(pattern = "dd/MM/yyy", timezone = "UTC")
     private Date dataUltimoKitEnviado;
     @Column(nullable = false)
     private String cargo;
