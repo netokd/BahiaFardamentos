@@ -10,12 +10,12 @@ public class Posto {
     @Id
     @SequenceGenerator(
             name = "bandeira_id_sequence",
-            sequenceName = "bandeira_id_sequence",
+            sequenceName = "posto_id_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "bandeira_id_sequence"
+            generator = "posto_id_sequence"
     )
     private Integer id;
 

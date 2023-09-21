@@ -27,20 +27,25 @@ public class Colaborador {
     private Date dataContratacao;
 
     private Date dataUltimoKitEnviado;
+    @Column(nullable = false)
+    private String cargo;
 
     @ManyToOne
     private Posto posto;
 
 
-    public Colaborador(Integer id, String nome, Date dataContratacao, Date dataUltimoKitEnviado, Posto posto) {
+
+
+    public Colaborador() {
+    }
+
+    public Colaborador(Integer id, String nome, Date dataContratacao, Date dataUltimoKitEnviado, String cargo, Posto posto) {
         this.id = id;
         this.nome = nome;
         this.dataContratacao = dataContratacao;
         this.dataUltimoKitEnviado = dataUltimoKitEnviado;
+        this.cargo = cargo;
         this.posto = posto;
-    }
-
-    public Colaborador() {
     }
 
     public Integer getId() {
@@ -75,6 +80,14 @@ public class Colaborador {
         this.dataUltimoKitEnviado = dataUltimoKitEnviado;
     }
 
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
     public Posto getPosto() {
         return posto;
     }
@@ -88,12 +101,12 @@ public class Colaborador {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Colaborador that = (Colaborador) o;
-        return Objects.equals(id, that.id) && Objects.equals(nome, that.nome) && Objects.equals(dataContratacao, that.dataContratacao) && Objects.equals(dataUltimoKitEnviado, that.dataUltimoKitEnviado) && Objects.equals(posto, that.posto);
+        return Objects.equals(id, that.id) && Objects.equals(nome, that.nome) && Objects.equals(dataContratacao, that.dataContratacao) && Objects.equals(dataUltimoKitEnviado, that.dataUltimoKitEnviado) && Objects.equals(cargo, that.cargo) && Objects.equals(posto, that.posto);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, dataContratacao, dataUltimoKitEnviado, posto);
+        return Objects.hash(id, nome, dataContratacao, dataUltimoKitEnviado, cargo, posto);
     }
 
     @Override
@@ -103,6 +116,7 @@ public class Colaborador {
                 ", nome='" + nome + '\'' +
                 ", dataContratacao=" + dataContratacao +
                 ", dataUltimoKitEnviado=" + dataUltimoKitEnviado +
+                ", cargo='" + cargo + '\'' +
                 ", posto=" + posto +
                 '}';
     }
