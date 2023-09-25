@@ -2,7 +2,9 @@ package com.neto.bahiafardamentos.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Fardamento {
@@ -21,7 +23,7 @@ public class Fardamento {
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false)
+
     private Integer quantidade;
 
     @ManyToOne
@@ -29,7 +31,6 @@ public class Fardamento {
 
     @ManyToOne
     private Bandeira bandeira;
-
 
     public Fardamento() {
     }

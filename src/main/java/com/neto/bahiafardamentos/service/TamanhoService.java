@@ -5,7 +5,6 @@ import com.neto.bahiafardamentos.exception.ApiResponse;
 import com.neto.bahiafardamentos.model.CategoriaFardamento;
 import com.neto.bahiafardamentos.model.Tamanho;
 import com.neto.bahiafardamentos.repository.TamanhoRepository;
-import com.sun.net.httpserver.HttpsServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.dao.DataIntegrityViolationException;

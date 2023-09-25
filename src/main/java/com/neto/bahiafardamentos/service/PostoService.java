@@ -7,7 +7,6 @@ import com.neto.bahiafardamentos.model.Bandeira;
 import com.neto.bahiafardamentos.model.Posto;
 import com.neto.bahiafardamentos.repository.BandeiraRepository;
 import com.neto.bahiafardamentos.repository.PostoRepository;
-import jakarta.persistence.Entity;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 

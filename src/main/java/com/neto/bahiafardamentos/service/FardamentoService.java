@@ -5,7 +5,6 @@ import com.neto.bahiafardamentos.exception.ApiError;
 import com.neto.bahiafardamentos.exception.ApiResponse;
 import com.neto.bahiafardamentos.model.Bandeira;
 import com.neto.bahiafardamentos.model.CategoriaFardamento;
-import com.neto.bahiafardamentos.model.Colaborador;
 import com.neto.bahiafardamentos.model.Fardamento;
 import com.neto.bahiafardamentos.repository.BandeiraRepository;
 import com.neto.bahiafardamentos.repository.CategoriaFardamentoRepository;
@@ -65,18 +64,15 @@ public class FardamentoService {
 
     public static class NewFardamentoRequest{
         private final String nome;
-        private final Integer quantidade;
         private final Integer categoriaId;
         private final Integer bandeiraId;
-        public NewFardamentoRequest(String nome, Integer quantidade, Integer categoriaId, Integer bandeiraId) {
+        public NewFardamentoRequest(String nome, Integer categoriaId, Integer bandeiraId) {
             this.nome = nome;
-            this.quantidade = quantidade;
             this.categoriaId = categoriaId;
             this.bandeiraId = bandeiraId;
         }
         public String getNome() {return nome;}
 
-        public Integer getQuantidade() {return quantidade;}
 
         public Integer getCategoriaId() {return categoriaId;}
 
@@ -98,7 +94,6 @@ public class FardamentoService {
                 Fardamento fardamento = new Fardamento();
 
                 fardamento.setNome(request.getNome());
-                fardamento.setQuantidade(request.getQuantidade());
                 fardamento.setCategoria(categoria);
                 fardamento.setBandeira(bandeira);
 
@@ -129,7 +124,6 @@ public class FardamentoService {
             if(optionalFardamento.isPresent()){
                 Fardamento existingFardamento = optionalFardamento.get();
                 existingFardamento.setNome(updateFardamento.getNome());
-                existingFardamento.setQuantidade(updateFardamento.getQuantidade());
 
                 Optional<CategoriaFardamento> optionalCategoria = categoriaFardamentoRepository.findById(categoriaId);
                 if(optionalCategoria.isPresent()){

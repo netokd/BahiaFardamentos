@@ -9,7 +9,7 @@ public class Posto {
 
     @Id
     @SequenceGenerator(
-            name = "bandeira_id_sequence",
+            name = "posto_id_sequence",
             sequenceName = "posto_id_sequence",
             allocationSize = 1
     )

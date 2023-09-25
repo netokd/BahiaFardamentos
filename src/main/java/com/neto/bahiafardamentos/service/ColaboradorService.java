@@ -7,7 +7,6 @@ import com.neto.bahiafardamentos.model.Colaborador;
 import com.neto.bahiafardamentos.model.Posto;
 import com.neto.bahiafardamentos.repository.ColaboradorRepository;
 import com.neto.bahiafardamentos.repository.PostoRepository;
-import org.hibernate.annotations.Parent;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.dao.DataIntegrityViolationException;

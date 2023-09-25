@@ -29,6 +29,8 @@ public class Tamanho {
     @JsonIgnore
     private Set<CategoriaFardamento> categorias = new HashSet<>();
 
+
+
     public Tamanho(Integer id, String nome, Set<CategoriaFardamento> categorias) {
         this.id = id;
         this.nome = nome;
