@@ -3,7 +3,6 @@ package com.neto.bahiafardamentos.service;
 import com.neto.bahiafardamentos.dto.EstoqueSimplificadoDTO;
 import com.neto.bahiafardamentos.exception.ApiError;
 import com.neto.bahiafardamentos.exception.ApiResponse;
-import com.neto.bahiafardamentos.model.CategoriaFardamento;
 import com.neto.bahiafardamentos.model.EstoqueFardamentoTamanho;
 import com.neto.bahiafardamentos.model.Fardamento;
 import com.neto.bahiafardamentos.model.Tamanho;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 

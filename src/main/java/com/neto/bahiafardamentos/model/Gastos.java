@@ -22,20 +22,16 @@ public class Gastos {
 
     private Double valor;
     private LocalDate dataEntrada;
+    private String descricao;
 
+    public Gastos() {
+    }
 
-    @ManyToOne
-    @JoinColumn
-    private CategoriaFardamento categoriaFardamento;
-
-    public Gastos(Integer id, Double valor, LocalDate dataEntrada, CategoriaFardamento categoriaFardamento) {
+    public Gastos(Integer id, Double valor, LocalDate dataEntrada, String descricao) {
         this.id = id;
         this.valor = valor;
         this.dataEntrada = dataEntrada;
-        this.categoriaFardamento = categoriaFardamento;
-    }
-
-    public Gastos() {
+        this.descricao = descricao;
     }
 
     public Integer getId() {
@@ -62,12 +58,12 @@ public class Gastos {
         this.dataEntrada = dataEntrada;
     }
 
-    public CategoriaFardamento getCategoriaFardamento() {
-        return categoriaFardamento;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setCategoriaFardamento(CategoriaFardamento categoriaFardamento) {
-        this.categoriaFardamento = categoriaFardamento;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     @Override
@@ -75,12 +71,12 @@ public class Gastos {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Gastos gastos = (Gastos) o;
-        return Objects.equals(id, gastos.id) && Objects.equals(valor, gastos.valor) && Objects.equals(dataEntrada, gastos.dataEntrada) && Objects.equals(categoriaFardamento, gastos.categoriaFardamento);
+        return Objects.equals(id, gastos.id) && Objects.equals(valor, gastos.valor) && Objects.equals(dataEntrada, gastos.dataEntrada) && Objects.equals(descricao, gastos.descricao);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, valor, dataEntrada, categoriaFardamento);
+        return Objects.hash(id, valor, dataEntrada, descricao);
     }
 
     @Override
@@ -89,7 +85,7 @@ public class Gastos {
                 "id=" + id +
                 ", valor=" + valor +
                 ", dataEntrada=" + dataEntrada +
-                ", categoriaFardamento=" + categoriaFardamento +
+                ", descricao='" + descricao + '\'' +
                 '}';
     }
 }

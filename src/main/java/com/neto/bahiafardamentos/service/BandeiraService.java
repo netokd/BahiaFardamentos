@@ -45,6 +45,11 @@ public class BandeiraService {
 
     }
 
+    @GetMapping("/getBandeiraById/{bandeiraId}")
+    public Optional<Bandeira> getBandeiraById(@PathVariable Integer bandeiraId) {
+        return bandeiraRepository.findById(bandeiraId);
+    }
+
     record NewBandeiraRequest(
             String nome
     ){}
