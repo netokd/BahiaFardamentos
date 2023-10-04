@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Posto</title>
+    <link   rel="stylesheet" href="/css/styles-create.css">
+</head>
+<body>
+<h1>Adicionar Posto</h1>
+<div class="div-form">
+    <form th:action="@{/adicionar-posto}" th:object="${posto}" method="post">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" th:field="*{nome}" required><br>
+
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" name="endereco" th:field="*{endereco}" required>
+
+        <label for="bandeira">Bandeira:</label>
+        <select id="bandeira" name="bandeira.id" th:field="*{bandeira}" required>
+            <option th:each="bandeira : ${bandeiras}" th:value="${bandeira.id}" th:text="${bandeira.nome}"></option>
+        </select>
+
+        <button class="submit-button" type="submit">Adicionar Posto</button>
+    </form>
+</div>
+
+
+
+</body>
+</html>

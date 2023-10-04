@@ -47,8 +47,29 @@ public class BandeiraController {
 
     }
 
+    public List<Bandeira> obteTodasBandeiras(){
+        String apiEndpoint = "http://localhost:8050/api/v1/bandeira";
+
+        try{
+            List<Bandeira> bandeirasList = restTemplate.exchange(
+                    apiEndpoint,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<Bandeira>>() {
+                    }).getBody();
+            if (bandeirasList.isEmpty()) {
+                return null;
+            } else {
+                return bandeirasList;
+            }
+        } catch (HttpClientErrorException.NotFound ex) {
+            return null;
+        }
+
+    }
+
     @GetMapping("/adicionar-bandeira")
-    public String showAddBranchForm(Model model
+    public String showAddBandeiraForm(Model model
     ) {
         model.addAttribute("bandeira", new Bandeira());
         return "bandeira/create-bandeira";
@@ -91,7 +112,7 @@ public class BandeiraController {
     }
 
     @PostMapping("/atualizar-bandeira/{bandeiraId}")
-    public String attBandeira(@PathVariable Integer bandeiraId, @ModelAttribute Bandeira bandeira, Model model) {
+    public String updateBandeira(@PathVariable Integer bandeiraId, @ModelAttribute Bandeira bandeira, Model model) {
         String apiEndpoint = "http://localhost:8050/api/v1/bandeira/{bandeiraId}";
 
         try {
@@ -101,7 +122,7 @@ public class BandeiraController {
 
             HttpEntity<Bandeira> requestEntity = new HttpEntity<>(bandeira, headers);
 
-            // Faz a chamada para atualizar a bandeira usando o método HTTP PUT
+            // Faz a chamada para atualizar a bandeira usando o método HTTP POST
             ResponseEntity<Bandeira> responseEntity = restTemplate.exchange(
                     apiEndpoint,
                     HttpMethod.POST,

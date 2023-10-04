@@ -9,26 +9,26 @@ body{
     background-color: #002855;
 }
 
-#bandeira, #category {
+#bandeira, #category,#postos {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
 }
 
-#bandeira td, #category td, #bandeira th, #category th {
+#bandeira td, #category td, #bandeira th, #category th, #postos td, #postos th {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-#bandeira tr.odd, #category tr.odd{
+#bandeira tr.odd, #category tr.odd, #postos tr.odd{
     background-color: #c2bfbf;
 }
 
-#bandeira tr.even, #category tr.even{
+#bandeira tr.even, #category tr.even, #postos tr.even{
     background-color: #fff;
 }
 
-#bandeira tr, #category tr:hover {
+#bandeira tr, #postos tr, #category tr:hover{
     background-color: #ddd;
 }
 
@@ -38,7 +38,7 @@ body{
     margin: 0 auto;
 }
 
-#bandeira th , #category th {
+#bandeira th , #category th,#postos th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
@@ -115,7 +115,7 @@ div {
     color: #fff;
 }
 
-.NotFoundBandeira{
+.NotFound{
     padding: 10px 15px;
     color: #000000;
     text-decoration: none;

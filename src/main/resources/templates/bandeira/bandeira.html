@@ -32,12 +32,12 @@
                 </td>
             </tr>
         </table>
-        <div class="NotFoundBandeira" th:if="${#lists.isEmpty(bandeiraList)}">
+        <div class="NotFound" th:if="${#lists.isEmpty(bandeiraList)}">
             <p>Nenhuma bandeira encontrada.</p>
         </div>
     </div>
     <div>
-        <button class="add-button" ><a class="add-button" th:href="@{/adicionar-bandeira}">Adicionar Filial</a></button>
+        <button class="add-button" ><a class="add-button" th:href="@{/adicionar-bandeira}">Adicionar Bandeira</a></button>
     </div>
 
 

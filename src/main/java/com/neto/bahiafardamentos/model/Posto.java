@@ -68,6 +68,10 @@ public class Posto {
         return bandeira;
     }
 
+    public Integer getBandeiraId(){
+        return (bandeira != null) ? bandeira.getId() : null;
+    }
+
     public void setBandeira(Bandeira bandeira) {
         this.bandeira = bandeira;
     }

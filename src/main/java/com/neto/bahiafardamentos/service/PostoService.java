@@ -49,6 +49,11 @@ public class PostoService {
         }
     }
 
+    @GetMapping("/getPostoById/{postoId}")
+    public Optional<Posto> getPostoById(@PathVariable Integer postoId) {
+        return postoRepository.findById(postoId);
+    }
+
     record NewBandeiraRequest(
             Integer bandeiraId
     ){}
@@ -95,7 +100,7 @@ public class PostoService {
                     .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor: "+ ex.getMessage()));
         }
     }
-    @PostMapping("{postoId}")
+    @PutMapping("{postoId}")
     public ResponseEntity<?> updatePosto(
             @PathVariable("postoId") Integer postoId,
             @RequestBody NewPostoRequest updatePosto
