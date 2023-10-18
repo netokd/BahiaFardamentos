@@ -9,26 +9,30 @@ body{
     background-color: #002855;
 }
 
-#bandeira, #category,#postos {
+#table_show {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
+    overflow-x: auto;
 }
 
-#bandeira td, #category td, #bandeira th, #category th, #postos td, #postos th {
+#table_show th, #table_show tr{
     border: 1px solid #ddd;
     padding: 8px;
 }
+#table_show td{
+    padding: 8px;
+}
 
-#bandeira tr.odd, #category tr.odd, #postos tr.odd{
+#table_show tr.odd{
     background-color: #c2bfbf;
 }
 
-#bandeira tr.even, #category tr.even, #postos tr.even{
+#table_show tr.even{
     background-color: #fff;
 }
 
-#bandeira tr, #postos tr, #category tr:hover{
+#table_show tr:hover{
     background-color: #ddd;
 }
 
@@ -38,7 +42,7 @@ body{
     margin: 0 auto;
 }
 
-#bandeira th , #category th,#postos th {
+#table_show th{
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
@@ -120,4 +124,21 @@ div {
     color: #000000;
     text-decoration: none;
     background-color: #c2bfbf;
+}
+
+
+/* Estilos para telas menores, como tablets */
+@media only screen and (max-width: 768px) {
+    #table_show {
+        font-size: 14px;
+        /* Adicione mais estilos conforme necessário para tamanhos menores de tela */
+    }
+}
+
+/* Estilos para telas ainda menores, como smartphones */
+@media only screen and (max-width: 480px) {
+    #table_show {
+        font-size: 12px;
+        /* Adicione mais estilos conforme necessário para tamanhos menores de tela */
+    }
 }

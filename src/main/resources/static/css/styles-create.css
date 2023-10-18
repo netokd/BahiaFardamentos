@@ -43,3 +43,59 @@ h1{
     color: white;
     text-align: center;
 }
+div select {
+    background-color: white; /* Fundo branco para o select dentro da div */
+}
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 8px 0;
+    font-size: 16px;
+    width: 100%;
+    background: linear-gradient(45deg, transparent 50%, #171010 50%), linear-gradient(135deg, #000000 50%, transparent 50%);
+    background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+}
+
+/* Adiciona uma seta personalizada */
+select:after {
+    content: '\25BC';  /* Código Unicode para a seta para baixo */
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+/* Estilo para quando o select está focado */
+select:focus {
+    border-color: #007BFF;  /* Cor quando o select está focado */
+    outline: none;
+}
+
+/* Estilo para opções hover */
+select option:hover {
+    background-color: #007BFF;  /* Cor quando a opção está sendo hover */
+    color: #fff;
+}
+
+input[type=date] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Estilo para quando o input[type=date] está focado */
+input[type=date]:focus {
+    border-color: #007BFF;  /* Cor quando o input[type=date] está focado */
+    outline: none;
+}

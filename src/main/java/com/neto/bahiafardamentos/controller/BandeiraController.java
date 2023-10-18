@@ -14,14 +14,11 @@ import java.util.List;
 
 @Controller
 public class BandeiraController {
-
     private final RestTemplate restTemplate;
-
     @Autowired
     public BandeiraController(RestTemplate restTemplate){
         this.restTemplate = restTemplate;
     }
-
     @GetMapping("/bandeira")
     public String bandeira(Model model){
         String apiEndpoint = "http://localhost:8050/api/v1/bandeira";
@@ -46,10 +43,8 @@ public class BandeiraController {
         return "bandeira/bandeira";
 
     }
-
     public List<Bandeira> obteTodasBandeiras(){
         String apiEndpoint = "http://localhost:8050/api/v1/bandeira";
-
         try{
             List<Bandeira> bandeirasList = restTemplate.exchange(
                     apiEndpoint,
@@ -65,9 +60,7 @@ public class BandeiraController {
         } catch (HttpClientErrorException.NotFound ex) {
             return null;
         }
-
     }
-
     @GetMapping("/adicionar-bandeira")
     public String showAddBandeiraForm(Model model
     ) {
@@ -77,11 +70,9 @@ public class BandeiraController {
     @PostMapping("/adicionar-bandeira")
     public String addBandeira(@ModelAttribute Bandeira bandeira, Model model) {
         String apiEndpoint = "http://localhost:8050/api/v1/bandeira";
-
         try {
             // Faça a chamada para adicionar a bandeira
             restTemplate.postForObject(apiEndpoint, bandeira, Bandeira.class);
-
             // Redireciona para a página de listagem após a adição
             return "redirect:/bandeira";
         } catch (Exception e) {
@@ -90,8 +81,6 @@ public class BandeiraController {
             return "bandeira/create-bandeira";
         }
     }
-
-
     @GetMapping("/atualizar-bandeira/{bandeiraId}")
     public String showUpdateBandeiraForm(@PathVariable Integer bandeiraId, Model model) {
         // Fetch the bandeira object based on the ID and add it to the model
@@ -100,7 +89,6 @@ public class BandeiraController {
                 Bandeira.class,
                 bandeiraId
         );
-
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             Bandeira bandeira = responseEntity.getBody();
             model.addAttribute("bandeira", bandeira);
@@ -110,11 +98,9 @@ public class BandeiraController {
             return "redirect:/bandeira"; // Or show an error page
         }
     }
-
     @PostMapping("/atualizar-bandeira/{bandeiraId}")
     public String updateBandeira(@PathVariable Integer bandeiraId, @ModelAttribute Bandeira bandeira, Model model) {
         String apiEndpoint = "http://localhost:8050/api/v1/bandeira/{bandeiraId}";
-
         try {
             // Configuração da requisição
             HttpHeaders headers = new HttpHeaders();
@@ -145,7 +131,6 @@ public class BandeiraController {
             return "bandeira/update-bandeira/{bandeiraId}";
         }
     }
-
     @GetMapping("/excluir-bandeira/{bandeiraId}")
     public String deleteBandeira(@PathVariable Integer bandeiraId, Model model) {
         // Fetch the bandeira object based on the ID and add it to the model
@@ -154,7 +139,6 @@ public class BandeiraController {
                 Bandeira.class,
                 bandeiraId
         );
-
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             // Obtém a bandeira do response
             Bandeira bandeira = responseEntity.getBody();
@@ -174,17 +158,11 @@ public class BandeiraController {
                     Void.class,  // O tipo de retorno é Void, pois o DELETE não retorna um corpo
                     bandeiraId
             );
-
             return "redirect:/bandeira";
         } else {
             // Handle case where bandeira is not found
             return "redirect:/bandeira"; // Or show an error page
         }
     }
-
-
-
-
-
 
 }

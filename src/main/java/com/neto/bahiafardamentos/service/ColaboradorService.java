@@ -82,10 +82,14 @@ public class ColaboradorService {
             if(optionalPosto.isPresent()){
                 Posto posto = optionalPosto.get();
                 Colaborador colaborador = new Colaborador();
+                Date dataUltimoKit = request.getDataUltimoKitEnviado();
 
                 colaborador.setNome(request.getNome());
                 colaborador.setCargo(request.getCargo());
                 colaborador.setDataContratacao(request.getDataContratacao());
+                if(dataUltimoKit != null){
+                    colaborador.setDataUltimoKitEnviado(dataUltimoKit);
+                }
                 colaborador.setPosto(posto);
                 colaboradorRepository.save(colaborador);
                 return ResponseEntity.status((HttpStatus.CREATED))

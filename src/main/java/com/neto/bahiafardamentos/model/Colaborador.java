@@ -2,7 +2,11 @@ package com.neto.bahiafardamentos.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
@@ -25,10 +29,16 @@ public class Colaborador {
     private String nome;
 
     @Column(nullable = false)
-    @JsonFormat(pattern = "dd/MM/yyy", timezone = "UTC")
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "A data de contratação não pode ser nula")
+    @Past(message = "A data de contratação deve estar no passado")
     private Date dataContratacao;
 
-    @JsonFormat(pattern = "dd/MM/yyy", timezone = "UTC")
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dataUltimoKitEnviado;
     @Column(nullable = false)
     private String cargo;
@@ -79,6 +89,8 @@ public class Colaborador {
         return dataUltimoKitEnviado;
     }
 
+
+
     public void setDataUltimoKitEnviado(Date dataUltimoKitEnviado) {
         this.dataUltimoKitEnviado = dataUltimoKitEnviado;
     }
@@ -97,6 +109,41 @@ public class Colaborador {
 
     public void setPosto(Posto posto) {
         this.posto = posto;
+    }
+
+    public String getDataContratacaoString() {
+        if (this.dataContratacao != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            return dateFormat.format(this.dataContratacao);
+        }
+        return null;
+    }
+
+    public void setDataContratacaoString(String dataContratacaoString) throws Exception {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        this.dataContratacao = dateFormat.parse(dataContratacaoString);
+    }
+
+    public String getDataUltimoKitEnviadoString() {
+        if (this.dataUltimoKitEnviado != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            return dateFormat.format(this.dataUltimoKitEnviado);
+        }
+        return null;
+    }
+
+    public String getDataUltimoKitEnviadoStringFormatted() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return (this.dataUltimoKitEnviado != null) ? dateFormat.format(this.dataUltimoKitEnviado) : null;
+    }
+
+    public void setDataUltimoKitEnviadoString(String dataUltimoKitEnviadoString) throws Exception {
+        if (dataUltimoKitEnviadoString != null && !dataUltimoKitEnviadoString.isEmpty()) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            this.dataUltimoKitEnviado = dateFormat.parse(dataUltimoKitEnviadoString);
+        } else {
+            this.dataUltimoKitEnviado = null;
+        }
     }
 
     @Override

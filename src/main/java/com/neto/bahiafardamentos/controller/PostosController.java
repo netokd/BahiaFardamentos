@@ -50,6 +50,26 @@ public class PostosController {
         return "postos/postos";
     }
 
+    public List<Posto> obterTodosPostos(){
+        String apiEndpoint = "http://localhost:8050/api/v1/posto";
+        try{
+            List<Posto> postoList = restTemplate.exchange(
+                    apiEndpoint,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<Posto>>() {
+                    }).getBody();
+            if(postoList.isEmpty()){
+                return null;
+            }else {
+                return postoList;
+            }
+        } catch (HttpClientErrorException.NotFound ex) {
+            return null;
+        }
+    }
+
+
     @GetMapping("/adicionar-posto")
     public String showAddPostoForm(Model model
     ) {
@@ -63,9 +83,8 @@ public class PostosController {
             model.addAttribute("bandeiras", bandeiras);
             return "postos/create-posto";
         }
-
-
     }
+
     @PostMapping("/adicionar-posto")
     public String addPosto(@ModelAttribute Posto posto, Model model) {
         String apiEndpoint = "http://localhost:8050/api/v1/posto";

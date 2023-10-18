@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Colaborador</title>
+    <link rel="stylesheet" href="/css/styles-create.css">
+    <script>
+        function formatarData(input) {
+            var data = new Date(input.value); // Adiciona a hora para evitar problemas de fuso horário
+            var dia = ('0' + data.getDate()).slice(-2);
+            var mes = ('0' + (data.getMonth() + 1)).slice(-2); // Os meses são indexados de 0 a 11
+            var ano = data.getFullYear();
+
+            var dataFormatada = ano + '-' + mes + '-' + dia;
+            input.value = dataFormatada;
+        }
+    </script>
+</head>
+<body>
+<h1>Adicionar Posto</h1>
+<div class="div-form">
+    <form th:action="@{/adicionar-colaborador}" th:object="${colaborador}" method="post">
+        <span th:if="${#fields.hasErrors('dataContratacao')}" th:errors="*{dataContratacao}"></span>
+        <span th:if="${#fields.hasErrors('dataUltimoKitEnviado')}" th:errors="*{dataUltimoKitEnviado}"></span>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" th:field="*{nome}" required><br>
+
+        <label for="dataContratacao">Data de Contratação:</label>
+        <input type="date" id="dataContratacao" name="dataContratacao" th:field="*{dataContratacao}"  required>
+
+        <label for="dataUltimoKitEnviado">Data de Envio do Ultimo Kit:</label>
+        <input type="date" id="dataUltimoKitEnviado" name="dataUltimoKitEnviado" th:field="*{dataUltimoKitEnviado}">
+
+        <label for="cargo">Cargo:</label>
+        <input type="text" id="cargo" name="cargo" th:field="*{cargo}" required><br>
+
+        <label for="posto">Bandeira:</label>
+        <select id="posto" name="posto.id" th:field="*{posto}" required>
+            <option th:each="posto : ${posto}" th:value="${posto.id}" th:text="${posto.nome}"></option>
+        </select>
+
+        <button class="submit-button" type="submit">Adicionar Colaborador</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuardiVest: Gestão Integrada de EPIs para Postos de Combustível</title>
+    <link rel="stylesheet" href="/css/styles-listar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body >
+<div th:include="fragments/header::header"></div>
+<div>
+    <h1>Bem vindo a nossa Pagina de Colaboradores</h1>
+    <h2>Tabela de Colaboradores:</h2>
+
+    <div>
+        <table id="table_show" th:if="${not #lists.isEmpty(colaboradorList)}">
+            <tr>
+                <th>Nome</th>
+                <th>Data Contratação</th>
+                <th>Data Ultimo Envio</th>
+                <th>Cargo</th>
+                <th>Posto</th>
+                <th>Ações</th>
+
+            </tr>
+            <tr th:each="colaborador, iterStat : ${colaboradorList}" th:class="${iterStat.even} ? 'even' : 'odd'">
+                <td th:text="${colaborador.nome}"></td>
+                <td th:text="${#dates.format(colaborador.dataContratacao, 'dd/MM/yyyy')}"></td>
+                <td th:text="${colaborador.dataUltimoKitEnviadoStringFormatted}"></td>
+                <td th:text="${colaborador.cargo}"></td>
+                <td th:text="${colaborador.posto.nome}"></td>
+                <td>
+                    <a class="action-link" th:href="@{/atualizar-colaborador/{colaboradorId}(colaboradorId=${colaborador.id})}">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a class="action-link" th:href="@{/excluir-colaborador/{colaboradorId}(colaboradorId=${colaborador.id})}" onclick="return confirm('Tem certeza que deseja excluir?')">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <div class="NotFound" th:if="${#lists.isEmpty(colaboradorList)}">
+            <p>Nenhum colaborador encontrado.</p>
+        </div>
+    </div>
+    <div>
+        <button class="add-button" ><a class="add-button" th:href="@{/adicionar-colaborador}">Adicionar Colaborador</a></button>
+    </div>
+
+
+
+</div>
+
+
+
+
+</body>
+</html>

@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GuardiVest: Gestão Integrada de EPIs para Postos de Combustível</title>
     <link rel="stylesheet" href="/css/styles-listar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -14,7 +15,7 @@
     <h2>Tabela de Bandeiras:</h2>
 
     <div>
-        <table id="bandeira" th:if="${not #lists.isEmpty(bandeiraList)}">
+        <table id="table_show" th:if="${not #lists.isEmpty(bandeiraList)}">
             <tr>
                 <th>Nome</th>
                 <th>Ações</th>
