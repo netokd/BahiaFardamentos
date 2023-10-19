@@ -164,7 +164,8 @@ public class PostosController {
             }
 
             model.addAttribute("mensagem", "Erro ao atualizar a Posto.");
-            return "redirect:/atualizar-posto/{postoId}";        }
+            return "redirect:/atualizar-posto/{postoId}";
+        }
     }
 
     @GetMapping("/excluir-posto/{postoId}")

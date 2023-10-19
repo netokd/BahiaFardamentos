@@ -20,27 +20,28 @@
 <body>
 <h1>Adicionar Posto</h1>
 <div class="div-form">
-    <form th:action="@{/adicionar-colaborador}" th:object="${colaborador}" method="post">
+    <form th:action="@{/atualizar-colaborador/{colaboradorId}(colaboradorId=${colaboradorId})}" th:object="${colaborador}" method="post">
         <span th:if="${#fields.hasErrors('dataContratacao')}" th:errors="*{dataContratacao}"></span>
         <span th:if="${#fields.hasErrors('dataUltimoKitEnviado')}" th:errors="*{dataUltimoKitEnviado}"></span>
         <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" th:field="*{nome}" required><br>
+        <input type="text" id="nome" name="nome" th:field="*{nome}" th:if="${colaborador != null}" th:value="${colaborador.nome}" required> <br>
 
         <label for="dataContratacao">Data de Contratação:</label>
-        <input type="date" id="dataContratacao" name="dataContratacao" th:field="*{dataContratacao}"  required>
+        <input type="date" id="dataContratacao" name="dataContratacao" th:field="*{dataContratacao}" th:if="${colaborador != null}" th:value="${colaborador.dataContratacao}"  required>
 
         <label for="dataUltimoKitEnviado">Data de Envio do Ultimo Kit:</label>
-        <input type="date" id="dataUltimoKitEnviado" name="dataUltimoKitEnviado" th:field="*{dataUltimoKitEnviado}">
+        <input type="date" id="dataUltimoKitEnviado" name="dataUltimoKitEnviado" th:field="*{dataUltimoKitEnviado}" th:if="${colaborador != null}" th:value="${colaborador.dataUltimoKitEnviado}">
+
 
         <label for="cargo">Cargo:</label>
-        <input type="text" id="cargo" name="cargo" th:field="*{cargo}" required><br>
+        <input type="text" id="cargo" name="cargo" th:field="*{cargo}" th:if="${colaborador != null}" th:value="${colaborador.cargo}" required><br>
 
-        <label for="posto">Postos:</label>
+        <label for="posto">Posto:</label>
         <select id="posto" name="posto.id" th:field="*{posto}" required>
-            <option th:each="posto : ${posto}" th:value="${posto.id}" th:text="${posto.nome}"></option>
+            <option th:each="posto : ${posto}" th:value="${posto.id}" th:text="${posto.nome}" th:selected="${posto.id}"></option>
         </select>
 
-        <button class="submit-button" type="submit">Adicionar Colaborador</button>
+        <button class="submit-button" type="submit">Atualizar Colaborador</button>
     </form>
 </div>
 </body>

@@ -3,31 +3,36 @@ package com.neto.bahiafardamentos.controller;
 import com.neto.bahiafardamentos.dto.ColaboradorDTO;
 import com.neto.bahiafardamentos.model.Colaborador;
 import com.neto.bahiafardamentos.model.Posto;
+import com.neto.bahiafardamentos.repository.ColaboradorRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ColaboradorController {
     private final RestTemplate restTemplate;
     private PostosController postosController;
+    private ColaboradorRepository colaboradorRepository;
 
-    public ColaboradorController(RestTemplate restTemplate, PostosController postosController) {
+    public ColaboradorController(RestTemplate restTemplate, PostosController postosController, ColaboradorRepository colaboradorRepository) {
         this.restTemplate = restTemplate;
         this.postosController = postosController;
+        this.colaboradorRepository = colaboradorRepository;
     }
 
     @GetMapping("/colaborador")
@@ -80,6 +85,7 @@ public class ColaboradorController {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String dataContratacaoString = colaborador.getDataContratacaoString();
 
+            //Testa se Data do Ultimo Envio e nulo ou não
             try {
                 if (dataContratacaoString != null && !dataContratacaoString.isEmpty()) {
                     colaborador.setDataContratacao(dateFormat.parse(dataContratacaoString));
@@ -94,6 +100,7 @@ public class ColaboradorController {
                 model.addAttribute("mensagem", "Erro ao analisar a data de contratação.");
                 return "colaborador/deuruim2";
             }
+            //Testa se Data do Ultimo Envio e nulo ou não
             String dataUltimoKitEnviadoString = colaborador.getDataUltimoKitEnviadoString();
             try {
                 if (dataUltimoKitEnviadoString != null && !dataUltimoKitEnviadoString.isEmpty()) {
@@ -106,16 +113,6 @@ public class ColaboradorController {
                 model.addAttribute("mensagem", "Erro ao analisar a data de Envio de Kit.");
                 return "colaborador/deuruim2";
             }
-
-            // Adicione logs para depuração
-            System.out.println("Enviando solicitação para adicionar colaborador: " + colaborador);
-            // Adiciona logs para depuração
-            System.out.println("Data de Contratação convertida: " + colaborador.getDataContratacao());
-            System.out.println("Data do Último Kit Enviado convertida: " + colaborador.getDataUltimoKitEnviado());
-
-            // Adiciona logs antes e após a chamada ao método postForObject
-            System.out.println("Antes de enviar a solicitação para adicionar colaborador.");
-
             // Faça a chamada para adicionar o colaborador
             ColaboradorDTO colaboradorDTO = new ColaboradorDTO();
             colaboradorDTO.setNome(colaborador.getNome());
@@ -136,6 +133,83 @@ public class ColaboradorController {
             e.printStackTrace();
             model.addAttribute("mensagem", "Erro ao adicionar o colaborador. Detalhes do erro: " + e.getMessage());
             return "colaborador/deuruim3";
+        }
+    }
+
+    @GetMapping("/atualizar-colaborador/{colaboradorId}")
+    public String showUpdateColaboradorForm(@PathVariable Integer colaboradorId, Model model) {
+        ResponseEntity<Colaborador> responseEntity = restTemplate.getForEntity(
+                "http://localhost:8050/api/v1/colaborador/getColaboradorById/{colaboradorId}",
+                Colaborador.class,
+                colaboradorId
+        );
+        List<Posto> postos = postosController.obterTodosPostos();
+        if (postos.isEmpty()) {
+
+            model.addAttribute("mensagem", "Posto não encontrado");
+            return "colaborador/deuruim";
+
+        } else {
+            model.addAttribute("posto", postos);
+        }
+        if(responseEntity.getStatusCode() == HttpStatus.OK){
+            Colaborador colaborador = responseEntity.getBody();
+            model.addAttribute("colaborador", colaborador);
+            return "colaborador/update-colaborador";
+        }else{
+            model.addAttribute("mensagem", "Colaborador não encontrado");
+            return "colaborador/deuruim3";
+        }
+
+
+
+    }
+
+    @PostMapping("/atualizar-colaborador/{colaboradorId}")
+    public String updateColaborador(
+            @PathVariable Integer colaboradorId,
+            @ModelAttribute @Valid Colaborador colaborador,
+            Model model
+    ) {
+        String apiEndpoint = "http://localhost:8050/api/v1/colaborador/{colaboradorId}";
+
+        try{
+            //Configuração da requisição
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<Colaborador> requestEntity = new HttpEntity<>(colaborador,headers);
+
+            System.out.println("colaborador passado para a Entity" + colaborador.toString());
+            System.out.println("Entity passada" + requestEntity);
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+              apiEndpoint,
+              HttpMethod.PUT,
+              requestEntity,
+              String.class,
+              colaboradorId
+            );
+
+            if(responseEntity.getStatusCode() == HttpStatus.OK){
+                return "redirect:/colaborador";
+            }else{
+                // Trate os erros adequadamente
+                System.out.println("Erro ao atualizar a Colaborador. Status: " + responseEntity.getStatusCodeValue());
+                model.addAttribute("mensagem", "Erro ao atualizar a Colaborador.");
+                return "redirect:/atualizar-colaborador/{colaboradorId}";
+            }
+        } catch (Exception e) {
+            // Trate os erros adequadamente
+            System.out.println("CATCH Erro ao atualizar a Colaborador. Exceção: " + e.getMessage());
+            e.printStackTrace();  // Adicione esta linha para imprimir o stack trace completo
+
+            if (e instanceof HttpStatusCodeException) {
+                System.out.println("Resposta do servidor: " + ((HttpStatusCodeException) e).getResponseBodyAsString());
+            }
+
+            model.addAttribute("mensagem", "Erro ao atualizar a Posto.");
+            return "redirect:/atualizar-colaborador/{colaboradorId}";
         }
     }
 

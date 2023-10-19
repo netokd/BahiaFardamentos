@@ -59,18 +59,24 @@ public class ColaboradorService {
         private final Date dataUltimoKitEnviado;
         private final Integer postoId;
 
-        public NewColaboradorRequest(String nome, String cargo, Date dataContratacao, Date dataUltimoKitEnviado, Integer postoId) {
+        private final Posto posto;
+
+        public NewColaboradorRequest(String nome, String cargo, Date dataContratacao, Date dataUltimoKitEnviado, Integer postoId, Posto posto) {
             this.nome = nome;
             this.cargo = cargo;
             this.dataContratacao = dataContratacao;
             this.dataUltimoKitEnviado = dataUltimoKitEnviado;
             this.postoId = postoId;
+            this.posto = posto;
         }
+
         public String getNome() {return nome;}
         public String getCargo() {return cargo;}
         public Date getDataContratacao() {return dataContratacao;}
         public Date getDataUltimoKitEnviado() {return dataUltimoKitEnviado;}
         public Integer getPostoId() {return postoId;}
+
+        public Posto getPosto() {return posto;}
     }
 
     @PostMapping
@@ -91,6 +97,7 @@ public class ColaboradorService {
                     colaborador.setDataUltimoKitEnviado(dataUltimoKit);
                 }
                 colaborador.setPosto(posto);
+
                 colaboradorRepository.save(colaborador);
                 return ResponseEntity.status((HttpStatus.CREATED))
                         .body(new ApiResponse("Colaborador adicionado com sucesso"));
@@ -106,33 +113,60 @@ public class ColaboradorService {
         }
     }
 
-    @PostMapping("{colaboradorId}")
+    @PutMapping("/{colaboradorId}")
     public ResponseEntity<?> updateColaborador(
-            @PathVariable("colaboradorId") Integer colaboradorId,
+            @PathVariable(name = "colaboradorId") Integer colaboradorId,
             @RequestBody NewColaboradorRequest updateColaborador
     ){
+        System.out.println("ID do Colaborador na API: " + colaboradorId);
         try{
+            if (colaboradorId == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiError(HttpStatus.BAD_REQUEST, "O ID do colaborador não pode ser nulo"));
+            }
             Optional<Colaborador> optionalColaborador = colaboradorRepository.findById(colaboradorId);
             Integer postoId = updateColaborador.getPostoId();
 
+            if(postoId != null){
+                System.out.println("ok");
+            }else{
+                postoId = updateColaborador.getPosto().getId();
+            }
+
+
+            System.out.println("Colaborador Optional: " + optionalColaborador);
+            System.out.println("Posto Update: " + updateColaborador.getPosto().getId());
             if(optionalColaborador.isPresent()){
+                System.out.println("ID do Colaborador na API Dentro do IF: " + colaboradorId);
+
                 Colaborador existingColaborador = optionalColaborador.get();
                 existingColaborador.setNome(updateColaborador.getNome());
                 existingColaborador.setDataContratacao(updateColaborador.getDataContratacao());
                 existingColaborador.setCargo(updateColaborador.getCargo());
+                System.out.println("ID do Colaborador na API Dentro do existing: " + existingColaborador.getId());
+               // System.out.println("ID do POSTO na API: " + postoId);
+                System.out.println("ID do POSTO na API Dentro do existingColaborador: " + existingColaborador.getPosto().getId());
+
+                if(updateColaborador.getDataUltimoKitEnviado() != null){
+                    existingColaborador.setDataUltimoKitEnviado(updateColaborador.getDataUltimoKitEnviado());
+                }
 
                 Optional<Posto> optionalPosto = postoRepository.findById(postoId);
                 if(optionalPosto.isPresent()){
+                    System.out.println("ID do POSTO na API Dentro do IF: " + postoId);
                     Posto posto = optionalPosto.get();
                     existingColaborador.setPosto(posto);
                 }else{
+                    System.out.println("erro do posto: " + postoId);
                     return ResponseEntity.status(HttpStatus.NOT_FOUND)
                             .body(new ApiError(HttpStatus.NOT_FOUND, "Posto não encontrada"));
                 }
+                System.out.println("ID do Colaborador antes de salvar: " + existingColaborador.getId());
                 colaboradorRepository.save(existingColaborador);
-
+                System.out.println("ID do Colaborador na API apos salvar no repo: " + colaboradorId);
                 return ResponseEntity.ok("Posto atualizado com sucesso");
             }else{
+                System.out.println("ID do Colaborador na API dentro do else : " + colaboradorId);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ApiError(HttpStatus.NOT_FOUND, "Colaborador não encontrado"));
             }
@@ -171,7 +205,7 @@ public class ColaboradorService {
        }
     }
 
-    @DeleteMapping("{colaboradorId}")
+    @DeleteMapping("/{colaboradorId}")
     public ResponseEntity<?> deleteColaborador(@PathVariable("colaboradorId") Integer colaboradorId){
         try{
             Optional<Colaborador> optionalColaborador = colaboradorRepository.findById(colaboradorId);
@@ -186,6 +220,10 @@ public class ColaboradorService {
         }catch (Exception ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + ex.getMessage());
         }
+    }
+    @GetMapping("/getColaboradorById/{colaboradorId}")
+    public Optional<Colaborador> getColaboradorById(@PathVariable Integer colaboradorId) {
+        return colaboradorRepository.findById(colaboradorId);
     }
 
 }
