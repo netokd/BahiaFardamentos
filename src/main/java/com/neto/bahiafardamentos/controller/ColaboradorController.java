@@ -172,7 +172,6 @@ public class ColaboradorController {
             Model model
     ) {
         String apiEndpoint = "http://localhost:8050/api/v1/colaborador/{colaboradorId}";
-
         try{
             //Configuração da requisição
             HttpHeaders headers = new HttpHeaders();
@@ -213,6 +212,39 @@ public class ColaboradorController {
         }
     }
 
+    @GetMapping("/excluir-colaborador/{colaboradorId}")
+    public String deleteColaborador(@PathVariable Integer colaboradorId, Model model){
+        ResponseEntity<Colaborador> responseEntity = restTemplate.getForEntity(
+                "http://localhost:8050/api/v1/colaborador/getColaboradorById/{colaboradorId}",
+                Colaborador.class,
+                colaboradorId
+        );
 
+        if(responseEntity.getStatusCode() == HttpStatus.OK){
+            // Configuração da requisição
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            //Cria o objeto HttpEntity com as headers
+            HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 
+            //Faz a chamada para excluir o Colaborador usando o metodo HTTP DELETE
+            restTemplate.exchange(
+                    "http://localhost:8050/api/v1/colaborador/{colaboradorId}",
+                    HttpMethod.DELETE,
+                    requestEntity,
+                    Void.class,
+                    colaboradorId
+            );
+
+            return "redirect:/colaborador";
+        }else{
+                model.addAttribute("mensagem", "Erro ao Excluir Colaborador.");
+                return "/colaborador/deuruim3"; // Or show an error page
+            }
+    }
 }
+
+
+
+
+

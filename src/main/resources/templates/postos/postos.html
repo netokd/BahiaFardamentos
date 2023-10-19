@@ -26,7 +26,7 @@
             <tr th:each="posto, iterStat : ${postoList}" th:class="${iterStat.even} ? 'even' : 'odd'">
                 <td th:text="${posto.nome}"></td>
                 <td th:text="${posto.endereco}"></td>
-                <td th:text="${posto.bandeira.nome}"></td>
+                <td th:text="${posto.bandeira != null ? posto.bandeira.nome : 'N/A'}"></td>
                 <td>
                     <a class="action-link" th:href="@{/atualizar-posto/{postoId}(postoId=${posto.id})}">
                         <i class="fas fa-pencil-alt"></i>

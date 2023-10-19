@@ -177,9 +177,6 @@ public class PostosController {
         );
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            // Obtém a posto do response
-            Posto posto = responseEntity.getBody();
-
             // Configuração da requisição
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

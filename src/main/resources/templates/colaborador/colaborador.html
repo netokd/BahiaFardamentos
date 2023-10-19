@@ -30,7 +30,7 @@
                 <td th:text="${#dates.format(colaborador.dataContratacao, 'dd/MM/yyyy')}"></td>
                 <td th:text="${colaborador.dataUltimoKitEnviadoStringFormatted}"></td>
                 <td th:text="${colaborador.cargo}"></td>
-                <td th:text="${colaborador.posto.nome}"></td>
+                <td th:text="${colaborador.posto != null ? colaborador.posto.nome : 'N/A'}"></td>
                 <td>
                     <a class="action-link" th:href="@{/atualizar-colaborador/{colaboradorId}(colaboradorId=${colaborador.id})}">
                         <i class="fas fa-pencil-alt"></i>

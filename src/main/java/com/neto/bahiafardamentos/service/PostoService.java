@@ -4,8 +4,10 @@ package com.neto.bahiafardamentos.service;
 import com.neto.bahiafardamentos.exception.ApiError;
 import com.neto.bahiafardamentos.exception.ApiResponse;
 import com.neto.bahiafardamentos.model.Bandeira;
+import com.neto.bahiafardamentos.model.Colaborador;
 import com.neto.bahiafardamentos.model.Posto;
 import com.neto.bahiafardamentos.repository.BandeiraRepository;
+import com.neto.bahiafardamentos.repository.ColaboradorRepository;
 import com.neto.bahiafardamentos.repository.PostoRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,10 +26,12 @@ public class PostoService {
 
     private final PostoRepository postoRepository;
     private final BandeiraRepository bandeiraRepository;
+    private final ColaboradorRepository colaboradorRepository;
 
-    public  PostoService(PostoRepository postoRepository, BandeiraRepository bandeiraRepository){
+    public PostoService(PostoRepository postoRepository, BandeiraRepository bandeiraRepository, ColaboradorRepository colaboradorRepository) {
         this.postoRepository = postoRepository;
         this.bandeiraRepository = bandeiraRepository;
+        this.colaboradorRepository = colaboradorRepository;
     }
 
     public static void main(String[] args){SpringApplication.run(PostoService.class, args);}
@@ -141,6 +145,17 @@ public class PostoService {
         try{
             Optional<Posto> optionalPosto = postoRepository.findById(postoId);
             if(optionalPosto.isPresent()){
+
+                // Verificar se há colaboradores associados ao posto
+                List<Colaborador> colaboradores = colaboradorRepository.findByPostoId(postoId);
+                if(!colaboradores.isEmpty()){
+                    //Remover associações de colaboradores ao posto
+                    for(Colaborador colaborador : colaboradores){
+                        colaborador.setPosto(null);
+                        colaboradorRepository.save(colaborador);
+                    }
+                }
+
                 postoRepository.deleteById(postoId);
                 return ResponseEntity.ok("Posto deletado com sucesso.");
             }else{

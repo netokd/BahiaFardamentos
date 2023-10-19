@@ -5,7 +5,9 @@ import com.neto.bahiafardamentos.exception.ApiError;
 import com.neto.bahiafardamentos.exception.ApiResponse;
 import com.neto.bahiafardamentos.exception.BandeiraNotFoundException;
 import com.neto.bahiafardamentos.model.Bandeira;
+import com.neto.bahiafardamentos.model.Posto;
 import com.neto.bahiafardamentos.repository.BandeiraRepository;
+import com.neto.bahiafardamentos.repository.PostoRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,9 +23,11 @@ import java.util.Optional;
 @RequestMapping("api/v1/bandeira")
 public class BandeiraService {
     private final BandeiraRepository bandeiraRepository;
+    private final PostoRepository postoRepository;
 
-    public BandeiraService(BandeiraRepository bandeiraRepository){
+    public BandeiraService(BandeiraRepository bandeiraRepository, PostoRepository postoRepository) {
         this.bandeiraRepository = bandeiraRepository;
+        this.postoRepository = postoRepository;
     }
 
     public static void main(String[] args){SpringApplication.run(BandeiraService.class,args);}
@@ -75,14 +79,21 @@ public class BandeiraService {
     }
 
     @DeleteMapping("{bandeiraId}")
-    public ResponseEntity<Object> deleteBandeira(@PathVariable("bandeiraId") Integer id){
+    public ResponseEntity<Object> deleteBandeira(@PathVariable("bandeiraId") Integer bandeiraId){
         try{
-            Optional<Bandeira> optionalBandeira = bandeiraRepository.findById(id);
+            Optional<Bandeira> optionalBandeira = bandeiraRepository.findById(bandeiraId);
             if(optionalBandeira.isPresent()){
-              Bandeira bandeira = optionalBandeira.get();
-              //Remover futuras associações
-
-               bandeiraRepository.deleteById(id);
+              //Remover futuras associações(implementado)
+                // Verificar se há postos associados a bandeira
+                List<Posto> postos = postoRepository.findByBandeira_Id(bandeiraId);
+                if(!postos.isEmpty()){
+                    //Remover associações de postos a bandeira
+                    for(Posto posto : postos){
+                        posto.setBandeira(null);
+                        postoRepository.save(posto);
+                    }
+                }
+               bandeiraRepository.deleteById(bandeiraId);
                ApiResponse response = new ApiResponse("Bandeira excluída com sucesso.");
                return ResponseEntity.ok(response);
             }else{
