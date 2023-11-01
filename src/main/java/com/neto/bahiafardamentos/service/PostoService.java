@@ -53,7 +53,7 @@ public class PostoService {
         }
     }
 
-    @GetMapping("/getPostoById/{postoId}")
+
     public Optional<Posto> getPostoById(@PathVariable Integer postoId) {
         return postoRepository.findById(postoId);
     }

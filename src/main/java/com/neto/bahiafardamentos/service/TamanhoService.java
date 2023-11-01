@@ -4,6 +4,7 @@ import com.neto.bahiafardamentos.exception.ApiError;
 import com.neto.bahiafardamentos.exception.ApiResponse;
 import com.neto.bahiafardamentos.model.CategoriaFardamento;
 import com.neto.bahiafardamentos.model.Tamanho;
+import com.neto.bahiafardamentos.repository.CategoriaFardamentoRepository;
 import com.neto.bahiafardamentos.repository.TamanhoRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,13 +23,18 @@ public class TamanhoService {
 
 
     private final TamanhoRepository tamanhoRepository;
+    private final CategoriaFardamentoRepository categoriaFardamentoRepository;
 
-    public TamanhoService(TamanhoRepository tamanhoRepository){this.tamanhoRepository = tamanhoRepository;
-
+    public TamanhoService(TamanhoRepository tamanhoRepository, CategoriaFardamentoRepository categoriaFardamentoRepository) {
+        this.tamanhoRepository = tamanhoRepository;
+        this.categoriaFardamentoRepository = categoriaFardamentoRepository;
     }
 
     public static void main(String[] args){
         SpringApplication.run(TamanhoService.class,args);}
+
+    @GetMapping("/getTamanhoById/{tamanhoId}")
+    public Optional<Tamanho> getTamanhoById(@PathVariable Integer tamanhoId){return tamanhoRepository.findById(tamanhoId);}
 
     @GetMapping
     public ResponseEntity<?> getTamanho(){
@@ -67,18 +73,21 @@ public class TamanhoService {
         }
     }
 
-    @PostMapping("{tamanhoId}")
+    @PutMapping("{tamanhoId}")
     public ResponseEntity<Object> updateTamanho(@PathVariable("tamanhoId")Integer tamanhoId, @RequestBody Tamanho updateTamanho){
         try{
+            System.out.println("Entrou na API");
             Optional<Tamanho> optionalTamanho = tamanhoRepository.findById(tamanhoId);
             if(optionalTamanho.isPresent()){
+                System.out.println("Tamanho presente");
                 Tamanho existingTamanho = optionalTamanho.get();
                 existingTamanho.setNome(updateTamanho.getNome());
 
                 tamanhoRepository.save(existingTamanho);
 
-                return ResponseEntity.ok("Tamanho Atualizado com sucesso");
+                return ResponseEntity.ok().build();
             }else{
+                System.out.println("Tamanho ano ta presente");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ApiError(HttpStatus.NOT_FOUND, "Tamanho não encontrado"));
             }
@@ -94,20 +103,19 @@ public class TamanhoService {
 
 
     @DeleteMapping("{tamanhoId}")
-    public ResponseEntity<String> deleteTamanho(@PathVariable("tamanhoId") Integer id){
+    public ResponseEntity<String> deleteTamanho(@PathVariable("tamanhoId") Integer tamanhoId){
         try{
-            Optional<Tamanho> tamanhoOptional = tamanhoRepository.findById(id);
+            Optional<Tamanho> tamanhoOptional = tamanhoRepository.findById(tamanhoId);
 
             if(tamanhoOptional.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tamanho não encontrado.");
 
             } else{
                 Tamanho tamanho = tamanhoOptional.get();
-
                 for(CategoriaFardamento categoria : tamanho.getCategorias()){
                     categoria.getTamanhos().remove(tamanho);
                 }
-                tamanhoRepository.deleteById(id);
+                tamanhoRepository.deleteById(tamanhoId);
                 return ResponseEntity.ok("Tamanho removido com sucesso.");
             }
 

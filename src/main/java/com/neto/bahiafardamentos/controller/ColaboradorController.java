@@ -15,13 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class ColaboradorController {
@@ -240,7 +237,7 @@ public class ColaboradorController {
         }else{
                 model.addAttribute("mensagem", "Erro ao Excluir Colaborador.");
                 return "/colaborador/deuruim3"; // Or show an error page
-            }
+        }
     }
 }
 

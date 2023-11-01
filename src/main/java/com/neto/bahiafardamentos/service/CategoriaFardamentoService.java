@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 @RestController
@@ -30,6 +31,8 @@ public class CategoriaFardamentoService {
         this.categoriaFardamentoRepository = categoriaFardamentoRepository;
         this.tamanhoRepository = tamanhoRepository;
     }
+    @GetMapping("/getCategoriaById/{categoriaId}")
+    public Optional<CategoriaFardamento> getCategoriaById(@PathVariable Integer categoriaId){return categoriaFardamentoRepository.findById(categoriaId);}
 
     public static void main(String[] args){SpringApplication.run(CategoriaFardamentoService.class, args);}
 
@@ -55,31 +58,80 @@ public class CategoriaFardamentoService {
             Integer tamanhoId
     ){}
     public static class NewCategoriaRequest{
-        private final Integer tamanhoId;
-        private final String nome;
+        private  List<Integer> tamanhoIds;
+        private  String nome;
 
-        public NewCategoriaRequest(Integer tamanhoId, String nome){
-            this.tamanhoId = tamanhoId;
+        public NewCategoriaRequest(List<Integer> tamanhoIds, String nome) {
+            this.tamanhoIds = tamanhoIds;
             this.nome = nome;
         }
-        public Integer getTamanhoId(){return tamanhoId;}
-        public String getNome(){return nome;}
+
+        public NewCategoriaRequest() {
+        }
+
+        public void setNome(String nome){
+            this.nome = nome;
+        }
+
+        public void setTamanhoIds(List<Integer> tamanhoIds) {
+            this.tamanhoIds = tamanhoIds;
+        }
+
+        public String getNome() {
+            return nome;
+        }
+
+
+        public List<Integer> getTamanhoIds() {
+            return tamanhoIds;
+        }
+    }
+
+    public static class NewUpdateCatRequest{
+        private List<Tamanho> tamanhos;
+        private String nome;
+
+        public NewUpdateCatRequest(List<Tamanho> tamanhos, String nome) {
+            this.tamanhos = tamanhos;
+            this.nome = nome;
+        }
+
+        public NewUpdateCatRequest() {
+        }
+
+        public List<Tamanho> getTamanhos() {
+            return tamanhos;
+        }
+
+        public void setTamanhos(List<Tamanho> tamanhos) {
+            this.tamanhos = tamanhos;
+        }
+
+        public String getNome() {
+            return nome;
+        }
+
+        public void setNome(String nome) {
+            this.nome = nome;
+        }
     }
 
     @PostMapping
     public ResponseEntity<Object> addCategoriaFardamento(@RequestBody NewCategoriaRequest request){
        try{
-           Integer tamanhoId = request.getTamanhoId();
-           Optional<Tamanho> tamanhoOptional = tamanhoRepository.findById(tamanhoId);
-           if(tamanhoOptional.isPresent()) {
-               Tamanho tamanho = tamanhoOptional.get();
+           List<Integer> tamanhoIds = request.getTamanhoIds();
+           List<Tamanho> tamanhos = tamanhoRepository.findAllById(tamanhoIds);
+           if(!tamanhos.isEmpty()) {
                CategoriaFardamento categoria = new CategoriaFardamento();
                categoria.setNome(request.getNome());
-               categoria.getTamanhos().add(tamanho);
+               categoria.getTamanhos().addAll(tamanhos);
                categoriaFardamentoRepository.save(categoria);
+               System.out.println("A lista de tamanhos não está vazia.");
                return ResponseEntity.status(HttpStatus.CREATED)
                        .body(new ApiResponse("Categoria adicionada com sucesso"));
+
            }else {
+               System.out.println("A lista de tamanhos está vazia.");
                return  ResponseEntity.status(HttpStatus.NOT_FOUND)
                        .body(new ApiError(HttpStatus.NOT_FOUND, "Tamanho não encontrado"));
            }
@@ -119,13 +171,17 @@ public class CategoriaFardamentoService {
 
     }
 
-    @PostMapping("{categoriaId}")
-    public ResponseEntity<?> updateCategoria(@PathVariable("categoriaId") Integer categoriaId, @RequestBody CategoriaFardamento updateCategoria){
+    @PutMapping("{categoriaId}")
+    public ResponseEntity<?> updateCategoria(@PathVariable("categoriaId") Integer categoriaId, @RequestBody NewUpdateCatRequest updateCategoria){
         try{
+
             Optional<CategoriaFardamento> optionalCategoria = categoriaFardamentoRepository.findById(categoriaId);
+
             if(optionalCategoria.isPresent()){
                 CategoriaFardamento existingCategoria = optionalCategoria.get();
                 existingCategoria.setNome(updateCategoria.getNome());
+                existingCategoria.getTamanhos().clear();
+                existingCategoria.getTamanhos().addAll(updateCategoria.getTamanhos());
 
                 categoriaFardamentoRepository.save(existingCategoria);
 

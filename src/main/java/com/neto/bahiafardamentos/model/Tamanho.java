@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Tamanho {
@@ -87,7 +88,7 @@ public class Tamanho {
         return "Tamanho{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", categorias=" + categorias +
+                ", categorias=" + categorias.stream().map(CategoriaFardamento::getNome).collect(Collectors.toList()) +
                 '}';
     }
 }

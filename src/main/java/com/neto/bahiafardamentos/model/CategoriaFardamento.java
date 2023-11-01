@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class CategoriaFardamento {
@@ -24,13 +25,12 @@ public class CategoriaFardamento {
     @Column(nullable = false)
     private String nome;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "categoria_tamanho", // Nome da tabela de associação
             joinColumns = @JoinColumn(name = "categoria_id"), // Chave estrangeira para CategoriaFardamento
             inverseJoinColumns = @JoinColumn(name = "tamanho_id") // Chave estrangeira para Tamanho
     )
-
     private Set<Tamanho> tamanhos = new HashSet<>();
 
     public CategoriaFardamento(Integer id, String nome, Set<Tamanho> tamanhos) {
@@ -71,7 +71,7 @@ public class CategoriaFardamento {
         return "CategoriaFardamento{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", tamanhos=" + tamanhos +
+                ", tamanhos=" + tamanhos.stream().map(Tamanho::getNome).collect(Collectors.toList()) +
                 '}';
     }
 }

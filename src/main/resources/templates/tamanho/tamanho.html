@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuardiVest: Gestão Integrada de EPIs para Postos de Combustível</title>
+    <link rel="stylesheet" href="/css/styles-listar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body >
+<div th:include="fragments/header::header"></div>
+<div>
+    <h1>Bem vindo a nossa Pagina de Tamanhos</h1>
+    <h2>Tabela de Tamanhos:</h2>
+
+    <div>
+        <table id="table_show" th:if="${not #lists.isEmpty(tamanhoList)}">
+            <tr>
+                <th>Nome</th>
+                <th>Ações</th>
+
+            </tr>
+            <tr th:each="tamanho, iterStat : ${tamanhoList}" th:class="${iterStat.even} ? 'even' : 'odd'">
+                <td th:text="${tamanho.nome}"></td>
+                <td>
+                    <a class="action-link" th:href="@{/atualizar-tamanho/{tamanhoId}(tamanhoId=${tamanho.id})}">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a class="action-link" th:href="@{/excluir-tamanho/{tamanhoId}(tamanhoId=${tamanho.id})}" onclick="return confirm('Tem certeza que deseja excluir?')">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <div class="NotFound" th:if="${#lists.isEmpty(tamanhoList)}">
+            <p>Nenhum posto encontrado.</p>
+        </div>
+    </div>
+    <div>
+        <button class="add-button" ><a class="add-button" th:href="@{/adicionar-tamanho}">Adicionar Tamanho</a></button>
+    </div>
+
+
+
+</div>
+
+
+
+
+</body>
+</html>

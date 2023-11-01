@@ -25,9 +25,6 @@ public class PostosController {
         this.restTemplate = restTemplate;
     }
 
-
-
-
     @GetMapping("/postos")
     public String postos(Model model){
         String apiEndPoint = "http://localhost:8050/api/v1/posto";
@@ -71,8 +68,7 @@ public class PostosController {
 
 
     @GetMapping("/adicionar-posto")
-    public String showAddPostoForm(Model model
-    ) {
+    public String showAddPostoForm(Model model){
         List<Bandeira> bandeiras = bandeiraController.obteTodasBandeiras();
 
         if(bandeiras.isEmpty()){

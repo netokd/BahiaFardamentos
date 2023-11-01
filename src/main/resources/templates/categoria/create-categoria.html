@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Categoria</title>
+    <link rel="stylesheet" href="/css/styles-create.css">
+    <!-- Adicione o CSS personalizado para o select múltiplo -->
+    <link rel="stylesheet" href="/css/styles-select.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Adicione o link para o Select2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.0/css/select2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.0/js/select2.min.js"></script>
+
+</head>
+<body>
+<h1>Adicionar Categoria</h1>
+<div class="div-form">
+    <form th:action="@{/adicionar-categoria}" th:object="${categoria}" method="post">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" th:field="*{nome}" required><br>
+
+        <label for="tamanhos">Tamanhos:</label>
+        <!-- Adicione o atributo multiple para permitir a seleção múltipla -->
+        <select id="tamanhos" name="tamanhos" multiple="multiple" th:field="*{tamanhos}" required>
+            <option th:each="tamanho : ${tamanhos}" th:value="${tamanho.id}" th:text="${tamanho.nome}"></option>
+        </select>
+
+        <button class="submit-button" type="submit">Adicionar Categoria</button>
+    </form>
+</div>
+
+
+<!-- Adicione o script jQuery -->
+<script>
+    $(document).ready(function() {
+        // Inicializa o Select2 no elemento com id "tamanhos"
+        $("#tamanhos").select2();
+
+        // Adiciona a funcionalidade de seleção/deseleção ao clicar nos itens do select
+        $("#tamanhos").on("click", "option", function() {
+            $(this).prop("selected", !$(this).prop("selected")).trigger("change");
+        });
+    });
+</script>
+
+</body>
+</html>

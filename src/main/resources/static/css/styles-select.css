@@ -1,0 +1,69 @@
+/* Estilos para o select múltiplo */
+select[multiple] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: white; /* Fundo branco para o select */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+/* Estilo para opções no select múltiplo */
+select[multiple] option {
+    padding: 10px;
+}
+
+/* Estilo para opções selecionadas no select múltiplo */
+select[multiple] option:checked {
+    background-color: #007BFF;  /* Cor quando a opção do select múltiplo está selecionada */
+    color: #fff;
+}
+
+/* Estilo para quando o select múltiplo está focado */
+select[multiple]:focus {
+    border-color: #007BFF;  /* Cor quando o select múltiplo está focado */
+    outline: none;
+}
+
+/* Estilo personalizado para o Select2 */
+.select2-container--default .select2-selection--multiple {
+    background-color: white !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    min-height: 32px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #007BFF !important;  /* Cor quando a opção do select múltiplo está selecionada */
+    color: #fff !important;
+    border: 1px solid #007BFF !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #fff !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #fff !important;
+}
+
+/* Ajuste para a exibição dos tamanhos adicionados */
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    padding: 5px;
+    overflow: hidden;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    margin-top: 5px;
+}
+
+/* Ajuste para o fundo da seleção */
+.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+    list-style: none;
+}

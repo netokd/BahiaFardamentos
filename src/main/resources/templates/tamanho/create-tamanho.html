@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Tamanho</title>
+    <link   rel="stylesheet" href="/css/styles-create.css">
+</head>
+<body>
+<h1>Adicionar Tamanho</h1>
+<div class="div-form">
+    <form th:action="@{/adicionar-tamanho}" th:object="${tamanho}" method="post">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required><br>
+
+        <button class="submit-button" type="submit">Adicionar Tamanho</button>
+    </form>
+</div>
+
+
+</body>
+</html>
