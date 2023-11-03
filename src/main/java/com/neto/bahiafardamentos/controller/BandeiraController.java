@@ -43,7 +43,7 @@ public class BandeiraController {
         return "bandeira/bandeira";
 
     }
-    public List<Bandeira> obteTodasBandeiras(){
+    public List<Bandeira> obterTodasBandeiras(){
         String apiEndpoint = "http://localhost:8050/api/v1/bandeira";
         try{
             List<Bandeira> bandeirasList = restTemplate.exchange(

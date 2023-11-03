@@ -22,8 +22,6 @@ public class Fardamento {
     private String nome;
 
 
-    private Integer quantidade;
-
     @ManyToOne
     private CategoriaFardamento categoria;
 
@@ -33,10 +31,9 @@ public class Fardamento {
     public Fardamento() {
     }
 
-    public Fardamento(Integer id, String nome, Integer quantidade, CategoriaFardamento categoria, Bandeira bandeira) {
+    public Fardamento(Integer id, String nome, CategoriaFardamento categoria, Bandeira bandeira) {
         this.id = id;
         this.nome = nome;
-        this.quantidade = quantidade;
         this.categoria = categoria;
         this.bandeira = bandeira;
     }
@@ -55,14 +52,6 @@ public class Fardamento {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public Integer getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
     }
 
     public CategoriaFardamento getCategoria() {
@@ -86,12 +75,12 @@ public class Fardamento {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fardamento that = (Fardamento) o;
-        return Objects.equals(id, that.id) && Objects.equals(nome, that.nome) && Objects.equals(quantidade, that.quantidade) && Objects.equals(categoria, that.categoria) && Objects.equals(bandeira, that.bandeira);
+        return Objects.equals(id, that.id) && Objects.equals(nome, that.nome) && Objects.equals(categoria, that.categoria) && Objects.equals(bandeira, that.bandeira);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, quantidade, categoria, bandeira);
+        return Objects.hash(id, nome, categoria, bandeira);
     }
 
     @Override
@@ -99,7 +88,6 @@ public class Fardamento {
         return "Fardamento{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", quantidade=" + quantidade +
                 ", categoria=" + categoria +
                 ", bandeira=" + bandeira +
                 '}';

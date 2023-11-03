@@ -1,9 +1,6 @@
 package com.neto.bahiafardamentos.controller;
 
-import com.neto.bahiafardamentos.model.Bandeira;
-import com.neto.bahiafardamentos.model.CategoriaFardamento;
-import com.neto.bahiafardamentos.model.Posto;
-import com.neto.bahiafardamentos.model.Tamanho;
+import com.neto.bahiafardamentos.model.*;
 import com.neto.bahiafardamentos.repository.CategoriaFardamentoRepository;
 import com.neto.bahiafardamentos.repository.TamanhoRepository;
 import com.neto.bahiafardamentos.service.CategoriaFardamentoService;
@@ -36,6 +33,26 @@ public class CategoriaFardamentoController {
     public CategoriaFardamentoController(RestTemplate restTemplate, TamanhoController tamanhoController) {
         this.restTemplate = restTemplate;
         this.tamanhoController = tamanhoController;
+    }
+
+    public List<CategoriaFardamento> obterTodosCategorias(){
+        String apiEndpoint = "http://localhost:8050/api/v1/categoria";
+
+        try{
+            List<CategoriaFardamento> categoriaList = restTemplate.exchange(
+                    apiEndpoint,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<CategoriaFardamento>>() {
+                    }).getBody();
+            if(categoriaList.isEmpty()){
+                return null;
+            }else {
+                return categoriaList;
+            }
+        }catch (HttpClientErrorException.NotFound ex) {
+            return null;
+        }
     }
 
     @GetMapping("/categorias")

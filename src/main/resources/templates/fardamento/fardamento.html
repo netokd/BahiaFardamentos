@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuardiVest: Gestão Integrada de EPIs para Postos de Combustível</title>
+    <link rel="stylesheet" href="/css/styles-listar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body >
+<div th:include="fragments/header::header"></div>
+<div>
+    <h1>Bem vindo a nossa Pagina de Fardamento</h1>
+    <h2>Tabela de Fardamento:</h2>
+
+    <div>
+        <table id="table_show" th:if="${not #lists.isEmpty(fardamentoList)}">
+            <tr>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Bandeira</th>
+                <th>Ações</th>
+
+            </tr>
+            <tr th:each="fardamento, iterStat : ${fardamentoList}" th:class="${iterStat.even} ? 'even' : 'odd'">
+                <td th:text="${fardamento.nome}"></td>
+                <td th:text="${fardamento.categoria != null ? fardamento.categoria.nome : 'N/A'}"></td>
+                <td th:text="${fardamento.bandeira != null ? fardamento.bandeira.nome : 'N/A'}"></td>
+                <td>
+                    <a class="action-link" th:href="@{/atualizar-fardamento/{fardamentoId}(fardamentoId=${fardamento.id})}">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a class="action-link" th:href="@{/excluir-fardamento/{fardamentoId}(fardamentoId=${fardamento.id})}" onclick="return confirm('Tem certeza que deseja excluir?')">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                    <a class="action-link" th:href="@{/adicionar-estoque/{fardamentoId}(fardamentoId=${fardamento.id})}">
+                        <i class="fa-solid fa-boxes-stacked fa-beat"></i>
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <div class="NotFound" th:if="${#lists.isEmpty(fardamentoList)}">
+            <p>Nenhuma Farda encontrado.</p>
+        </div>
+    </div>
+    <div>
+        <button class="add-button" ><a class="add-button" th:href="@{/adicionar-fardamento}">Adicionar Fardamento</a></button>
+    </div>
+
+
+    <script>
+        function editCustumer(fardamentoId){
+            window.location.href = '/atualizar?id=' + fardamentoId;
+        }
+    </script>
+</div>
+
+
+
+
+</body>
+</html>

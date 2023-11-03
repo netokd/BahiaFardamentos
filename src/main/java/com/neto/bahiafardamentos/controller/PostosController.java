@@ -69,7 +69,7 @@ public class PostosController {
 
     @GetMapping("/adicionar-posto")
     public String showAddPostoForm(Model model){
-        List<Bandeira> bandeiras = bandeiraController.obteTodasBandeiras();
+        List<Bandeira> bandeiras = bandeiraController.obterTodasBandeiras();
 
         if(bandeiras.isEmpty()){
             model.addAttribute("mensagem", "Erro, Bandeira não localizada");
@@ -98,13 +98,13 @@ public class PostosController {
         }
     }
     @GetMapping("/atualizar-posto/{postoId}")
-    public String showUpdateBandeiraForm(@PathVariable Integer postoId, Model model){
+    public String showUpdatePostoForm(@PathVariable Integer postoId, Model model){
         ResponseEntity<Posto> responseEntity = restTemplate.getForEntity(
                 "http://localhost:8050/api/v1/posto/getPostoById/{postoId}",
                 Posto.class,
                 postoId
         );
-        List<Bandeira> bandeiras = bandeiraController.obteTodasBandeiras();
+        List<Bandeira> bandeiras = bandeiraController.obterTodasBandeiras();
 
         if(bandeiras.isEmpty()) {
             model.addAttribute("mensagem", "Erro, Bandeira não localizada");

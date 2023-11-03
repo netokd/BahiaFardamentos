@@ -30,7 +30,7 @@ public class TamanhoController {
     }
 
     @GetMapping("/tamanho")
-    public String postos(Model model){
+    public String tamanhos(Model model){
         String apiEndPoint = "http://localhost:8050/api/v1/tamanho";
 
         try{
